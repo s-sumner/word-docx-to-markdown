@@ -8,10 +8,14 @@ from docx2md import Converter
 import os
 import io
 import zipfile
+import mammoth
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = './uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'docx'}
+
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
@@ -31,8 +35,8 @@ def index():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
 
-            converter = Converter(filepath)
-            result = converter.convert()
+            with open(filepath, "rb") as docx_file:
+                result = mammoth.convert_to_markdown(docx_file).value
 
             os.remove(filepath)
             return render_template('index.html', markdown_content=result)
