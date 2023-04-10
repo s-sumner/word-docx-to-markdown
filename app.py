@@ -1,4 +1,7 @@
 # app.py
+import logging
+logging.basicConfig(filename='error.log', level=logging.DEBUG)
+
 from flask import Flask, request, render_template, flash, redirect
 from werkzeug.utils import secure_filename
 from docx2md import Converter
@@ -30,7 +33,6 @@ def index():
 
             converter = Converter(filepath)
             result = converter.convert()
-
 
             os.remove(filepath)
             return render_template('index.html', markdown_content=result)
