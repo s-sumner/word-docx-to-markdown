@@ -1,0 +1,19 @@
+# .gitignore
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+*.log
+.env
+*.sqlite3
+
+# Virtual environment
+venv/
+
+# Uploads directory
+uploads/
+
+# Log files
+*.log
