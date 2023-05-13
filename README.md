@@ -2,18 +2,23 @@
 
 A flask app that takes docx files and converts them to md files.
 
-## CLI commands
+## Deployment steps
+Create virtual environment
 ```python
 python -m venv venv
 ```
-# .\venv\Scripts\Activate 
+
+Activate virtual environment
+```
+.\venv\Scripts\Activate 
+```
 
 Updated requirements txt file
 ```python
 pip freeze > requirements.txt
 ```
 
-To run use: 
+Build and run app
 ```python
 python app.py
 ```
