@@ -19,6 +19,11 @@ Activate virtual environment
 Install dependencies if needed
 
 ```python
+# updated pip
+python.exe -m pip install --upgrade pip
+```
+
+```python
 pip install flask
 ```
 
