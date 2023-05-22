@@ -1,4 +1,3 @@
-# app.py
 import logging
 import re
 logging.basicConfig(filename='error.log', level=logging.DEBUG)
@@ -40,11 +39,17 @@ def index():
             with open(filepath, "rb") as docx_file:
                 result = mammoth.convert_to_markdown(docx_file).value
             
-            # Remove \ from markdown
-            result = result.replace("\\.", ".").replace("\\)", ")").replace("\\-", "-").replace("\\(", "(")
+            # Remove trailing whitespaces from each line
+            result = '\n'.join(line.rstrip() for line in result.split('\n'))
+            
+            # Remove escape character from markdown
+            result = result.replace("\\.", ".").replace("\\)", ")").replace("\\-", "-").replace("\\(", "(").replace("\\]", "]").replace("\\[", "[")
             
             # Remove "https://learn.microsoft.com/en-us" from links and keep the remaining URL intact
             result = re.sub(r'https://learn.microsoft.com/[a-z]+-[a-z]+(/azure)?', '/azure', result)
+            
+            # Fix double underscore issue            
+            result = re.sub(r'__(.*?)\s+__', r'__\1__ ', result)
 
             os.remove(filepath)
             return render_template('index.html', markdown_content=result)
