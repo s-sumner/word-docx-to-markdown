@@ -19,20 +19,17 @@ Activate virtual environment
 Install dependencies if needed
 
 ```python
-# updated pip
+# update pip
 python.exe -m pip install --upgrade pip
 ```
 
 ```python
 pip install flask
-```
-
-```python
 pip install docx2md
-```
-
-```python
 pip install mammoth
+pip install flask python-docx mammoth
+pip install html2text
+pip install python-docx tabulate
 ```
 
 Updated requirements txt file

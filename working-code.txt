@@ -1,3 +1,5 @@
+6/15/23
+
 import logging
 import re
 import os
@@ -6,7 +8,6 @@ from flask import Flask, request, render_template, flash, redirect
 from werkzeug.utils import secure_filename
 from docx import Document
 import mammoth
-from tabulate import tabulate
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = './uploads'
@@ -18,24 +19,41 @@ if not os.path.exists(app.config['UPLOAD_FOLDER']):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
-def word_table_to_markdown(filename):
-    doc = Document(filename)
+def extract_and_replace_tables(filepath):
+    doc = Document(filepath)
+    table_placeholders = []
     markdown_tables = []
 
-    for table in doc.tables:
-        data = []
+    for i, table in enumerate(doc.tables):
+        # replace the table with a placeholder in the document
+        placeholder = f"TABLE_PLACEHOLDER_{i}"
+        table_placeholders.append(placeholder)
 
+        # convert the table to markdown and save it
+        markdown_table = []
         for row in table.rows:
-            cell_data = []
+            cells = [cell.text for cell in row.cells]
+            markdown_table.append('| ' + ' | '.join(cells) + ' |')
+        
+        # Add the header separator row
+        header_separator = '| --- ' * len(table.columns) + '|'
+        markdown_table.insert(1, header_separator)
+        
+        markdown_tables.append('\n'.join(markdown_table))
 
-            for cell in row.cells:
-                cell_data.append(cell.text)
+        # replace the table with the placeholder in the document
+        parent = table._element.getparent()
+        parent_index = parent.index(table._element)
+        parent.remove(table._element)
 
-            data.append(cell_data)
+        new_paragraph = doc.add_paragraph()
+        new_paragraph.add_run().text = placeholder
+        parent.insert(parent_index, new_paragraph._element)
 
-        markdown_tables.append(tabulate(data, tablefmt="pipe", headers="firstrow"))
+    # save the document with placeholders instead of tables
+    doc.save(filepath)
 
-    return "\n".join(markdown_tables)
+    return table_placeholders, markdown_tables
 
 def replace_images_with_placeholder(content, images):
     img_regex = r'!\[.*?\]\((.*?)\)'
@@ -67,15 +85,16 @@ def index():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename).replace("\\", "/")
             file.save(filepath)
 
+            # Extract and replace tables with placeholders
+            table_placeholders, markdown_tables = extract_and_replace_tables(filepath)
+
             # Convert DOCX to Markdown
             with open(filepath, "rb") as docx_file:
                 result = mammoth.convert_to_markdown(docx_file).value
 
-            # Extract tables from word doc and convert to markdown
-            tables_md = word_table_to_markdown(filepath)
-
-            # Combine markdown text and tables
-            result = result + "\n\n" + tables_md
+            # Replace placeholders with markdown tables
+            for i, placeholder in enumerate(table_placeholders):
+                result = result.replace(placeholder, markdown_tables[i])
 
             # Remove trailing whitespaces from each line
             result = '\n'.join(line.rstrip() for line in result.split('\n'))
@@ -114,3 +133,4 @@ def index():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
