@@ -20,22 +20,25 @@ def allowed_file(filename):
 
 def word_table_to_markdown(filename):
     doc = Document(filename)
-    markdown_tables = []
+    markdown_content = []
 
-    for table in doc.tables:
-        data = []
+    for element in doc.element.body:
+        if element.tag.endswith('tbl'):
+            # Extract table content
+            table = element
+            data = []
+            for row in table.rows:
+                cell_data = []
+                for cell in row.cells:
+                    cell_data.append(cell.text)
+                data.append(cell_data)
+            markdown_content.append(tabulate(data, tablefmt="pipe", headers="firstrow"))
+        elif element.tag.endswith('p'):
+            # Extract paragraph content
+            paragraph = element
+            markdown_content.append(mammoth.convert_to_markdown(paragraph).value)
 
-        for row in table.rows:
-            cell_data = []
-
-            for cell in row.cells:
-                cell_data.append(cell.text)
-
-            data.append(cell_data)
-
-        markdown_tables.append(tabulate(data, tablefmt="pipe", headers="firstrow"))
-
-    return "\n".join(markdown_tables)
+    return "\n".join(markdown_content)
 
 def replace_images_with_placeholder(content, images):
     img_regex = r'!\[.*?\]\((.*?)\)'
@@ -69,7 +72,7 @@ def index():
 
             # Convert DOCX to Markdown
             with open(filepath, "rb") as docx_file:
-                result = mammoth.convert_to_markdown(docx_file).value
+                result = word_table_to_markdown(filepath)
 
             # Extract tables from word doc and convert to markdown
             tables_md = word_table_to_markdown(filepath)
