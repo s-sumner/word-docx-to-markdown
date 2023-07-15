@@ -97,6 +97,9 @@ def index():
             
             # Replace double underscore with double asterisks for bold phrases
             result = re.sub(r' \*\*(.*?)', r'** \1', result)
+
+            # Replace "-** " with "- **"
+            result = re.sub(r'-\*\*\s(.+)', r'- **\1', result)
         
             # Remove periods with space on both sides
             # result = result.replace('. ', '')
