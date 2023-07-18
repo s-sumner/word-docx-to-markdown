@@ -21,7 +21,7 @@ if not os.path.exists(app.config['UPLOAD_FOLDER']):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
-
+'''
 def word_table_to_markdown(filename):
     doc = Document(filename)
     markdown_content = []
@@ -52,7 +52,47 @@ def word_table_to_markdown(filename):
         markdown_content.append(tabulate(data, tablefmt="pipe", headers="firstrow"))
 
     return markdown_content
+'''
+def word_table_to_markdown(filename):
+    doc = Document(filename)
+    markdown_content = []
+    table_number = 1  # Initialize the table number
 
+    for i, table in enumerate(doc.tables):
+        data = []
+
+        for row in table.rows:
+            cell_data = []
+
+            for cell in row.cells:
+                cell_data.append(cell.text)
+
+            data.append(cell_data)
+
+        # Generate the table start and end placeholders
+        table_start_placeholder = f'[TABLE {table_number} START]'
+        table_end_placeholder = f'[TABLE {table_number} END]'
+
+        # Create a custom XML element for the table start placeholder
+        start_custom_element = lxml.etree.Element('placeholder')
+        start_custom_element.text = table_start_placeholder
+
+        # Create a custom XML element for the table end placeholder
+        end_custom_element = lxml.etree.Element('placeholder')
+        end_custom_element.text = table_end_placeholder
+
+        # Replace the table element with the custom elements
+        table._element.getparent().replace(table._element, start_custom_element, end_custom_element)
+
+        # Increment the table number
+        table_number += 1
+
+        # Append the table start placeholder, table data, and table end placeholder to the markdown content list
+        markdown_content.append(table_start_placeholder)
+        markdown_content.append(tabulate(data, tablefmt="pipe", headers="firstrow"))
+        markdown_content.append(table_end_placeholder)
+
+    return markdown_content
 
 
 def replace_images_with_placeholder(content, images):
