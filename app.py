@@ -72,25 +72,6 @@ def replace_urls(content):
 
     return result
 
-
-def convert_to_table_markdown(text):
-    pattern = r"(?s).*?(?:\n\n|\Z){0,300}"
-    matches = re.findall(pattern, text)
-
-    rows = len(matches)
-    columns = text.count('\n\n') // rows
-
-    markdown_table = ""
-    markdown_table += "| " * columns + "|\n"
-    markdown_table += "| --- " * columns + "|\n"
-
-    for match in matches:
-        markdown_table += "|" + match.replace('\n', ' | ') + "|\n"
-
-    return markdown_table
-
-
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -116,10 +97,6 @@ def index():
 
             # Combine the modified Markdown content
             result = result + "\n\n".join(markdown_content[1::2])
-
-            # Convert the result to markdown table format
-            result = convert_to_table_markdown(result)
-
 
             # Replace the first identical match of table text with the corresponding table
             for placeholder, table in zip(table_placeholders, markdown_content[1::2]):
