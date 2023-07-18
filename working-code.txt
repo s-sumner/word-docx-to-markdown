@@ -21,7 +21,6 @@ if not os.path.exists(app.config['UPLOAD_FOLDER']):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
-
 def word_table_to_markdown(filename):
     doc = Document(filename)
     markdown_content = []
@@ -52,7 +51,6 @@ def word_table_to_markdown(filename):
         markdown_content.append(tabulate(data, tablefmt="pipe", headers="firstrow"))
 
     return markdown_content
-
 
 
 def replace_images_with_placeholder(content, images):
