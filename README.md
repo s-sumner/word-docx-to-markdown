@@ -1,6 +1,6 @@
 # Readme
 
-A flask app that takes docx files and converts them to md files.
+A flask app that takes docx files and converts them to markdown. ChatGPT generated most of the code. 
 
 ## Deployment steps
 
