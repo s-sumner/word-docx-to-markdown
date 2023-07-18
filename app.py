@@ -68,6 +68,10 @@ def replace_images_with_placeholder(content, images):
 def replace_urls(content):
     # Change URLs starting with "https://learn.microsoft.com/azure/" to "/azure/..."
     result = re.sub(r'https://learn.microsoft.com/azure/(.+)', r'/azure/\1', content)
+
+    # Remove "en-us/" from URLs
+    result = result.replace("/en-us/", "/")
+
     return result
 
 @app.route('/', methods=['GET', 'POST'])
