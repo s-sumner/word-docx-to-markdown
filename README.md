@@ -2,7 +2,7 @@
 
 A flask app that takes docx files and converts them to markdown. ChatGPT generated most of the code. 
 
-## Deployment steps
+## Local deployment steps
 
 Create virtual environment
 
