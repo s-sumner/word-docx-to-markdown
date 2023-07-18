@@ -1,3 +1,5 @@
+
+
 import logging
 import re
 import os
@@ -35,7 +37,7 @@ def word_table_to_markdown(filename):
             data.append(cell_data)
 
         # Generate a unique placeholder for each table
-        placeholder = f'[ADD TABLE {i}]'
+        placeholder = f'[TABLE_{i}]'
 
         # Create a custom XML element with the placeholder text
         custom_element = lxml.etree.Element('placeholder')
@@ -50,18 +52,6 @@ def word_table_to_markdown(filename):
 
     return markdown_content
 
-def update_markdown_with_table_placeholders(markdown):
-    pattern = r'\n\S{0,300}\n\S{0,300}\n\S{0,300}\n\S{0,300}'
-    table_counter = 0
-
-    def replace_table(match):
-        nonlocal table_counter
-        placeholder = f'[ADD TABLE {table_counter}]'
-        table_counter += 1
-        return placeholder
-
-    updated_markdown = re.sub(pattern, replace_table, markdown)
-    return updated_markdown
 
 def replace_images_with_placeholder(content, images):
     img_regex = r'!\[.*?\]\((.*?)\)'
@@ -113,9 +103,6 @@ def index():
                 if placeholder in result:
                     result = result.replace(placeholder, table, 1)
                     break
-
-            # Update the markdown with table placeholders
-            result = update_markdown_with_table_placeholders(result)
 
             ## end table 
 
