@@ -1,4 +1,4 @@
-
+## \n+([^|\n]{0,100})\n
 
 import logging
 import re
