@@ -1,10 +1,8 @@
-
-
 import logging
 import re
 import os
 import io
-import lxml.etree  # Import lxml.etree module
+import lxml.etree
 from flask import Flask, request, render_template, flash, redirect
 from werkzeug.utils import secure_filename
 from docx import Document
@@ -20,6 +18,21 @@ if not os.path.exists(app.config['UPLOAD_FOLDER']):
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+def generate_markdown_table(text):
+    pattern = r'\n+([^|\n]{0,100})\n'
+    matches = re.findall(pattern, text)
+    rows = len(matches)
+    columns = text.count('\n\n') // rows
+
+    markdown_table = ""
+    markdown_table += "| " * columns + "|\n"
+    markdown_table += "| --- " * columns + "|\n"
+
+    for match in matches:
+        markdown_table += "|" + match.replace('\n', ' | ') + "|\n"
+
+    return markdown_table
 
 def word_table_to_markdown(filename):
     doc = Document(filename)
@@ -51,7 +64,6 @@ def word_table_to_markdown(filename):
         markdown_content.append(tabulate(data, tablefmt="pipe", headers="firstrow"))
 
     return markdown_content
-
 
 def replace_images_with_placeholder(content, images):
     img_regex = r'!\[.*?\]\((.*?)\)'
