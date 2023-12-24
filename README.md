@@ -2,7 +2,7 @@
 
 A flask app that takes docx files and converts them to markdown. AI-assisted code development. 
 
-There are steps to [deploy locally](##local-deployment-steps) and [deploy to Azure App Service](##deploy-to-azure-app-service)
+There are steps to [deploy locally](#local-deployment-steps) and [deploy to Azure App Service](#deploy-to-azure-app-service)
 
 ## Local deployment steps
 
