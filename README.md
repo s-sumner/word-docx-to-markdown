@@ -1,6 +1,9 @@
 # Readme
 
 A flask app that takes docx files and converts them to markdown. AI-assisted code development. 
+
+![Cloud deployment architecture](./images/cd-pipeline.jpg)
+
 ## Deploy to Azure App Service
 
 1. Create a web app in Azure App Service. Use Python 3.12 runtime. Start with a Free App Service Plan.
