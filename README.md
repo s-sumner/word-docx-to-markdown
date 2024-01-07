@@ -2,9 +2,9 @@
 
 A flask app that takes docx files and converts them to markdown. AI-assisted code development. 
 
-![Cloud deployment architecture](./images/cd-pipeline.jpg)
-
 ## Deploy to Azure App Service
+
+![Cloud deployment architecture](./images/cd-pipeline.jpg)
 
 1. Create a web app in Azure App Service. Use Python 3.12 runtime. Start with a Free App Service Plan.
 2. Connect GitHub organization to the web app in Azure App Service. With a Free App Service Plan, you have to connect GitHub to the web app after the deployment. In the Azure Portal, find you web app you created in step 1. Select "Deployment Center" on the left. In the Settings tab, enter the correct source control, organization, repository, and branch. Select "Add Workflow", and Azure App Service automatically creates a workflow yaml file and adds it to your repository.
