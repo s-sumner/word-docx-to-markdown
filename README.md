@@ -2,6 +2,8 @@
 
 A flask app that takes docx files and converts them to markdown. AI-assisted code development. 
 
+Fork and clone this repo as a prerequsite.
+
 ## Deploy to Azure App Service
 
 ![Cloud deployment architecture](./images/cd-pipeline.jpg)
